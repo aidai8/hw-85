@@ -35,3 +35,10 @@ export interface UserFields {
     password: string;
     token: string;
 }
+
+export interface TrackHistory extends Document {
+    user: Types.ObjectId;
+    track: Types.ObjectId;
+    artist: Types.ObjectId;
+    datetime: Date;
+}

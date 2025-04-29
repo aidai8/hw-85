@@ -29,7 +29,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
                 onClose={handleClose}
             >
                 <MenuItem>
-                    <Button component={NavLink} to="/track-history" onClick={handleClose}>
+                    <Button component={NavLink} to="/trackHistory" onClick={handleClose}>
                         Track History
                     </Button>
                 </MenuItem>

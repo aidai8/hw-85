@@ -1,22 +1,11 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchTracks } from "./trackSlice";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Typography,
-    Box,
-    IconButton
-} from "@mui/material";
+import {useEffect} from "react";
+import {useParams} from "react-router-dom";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {fetchTracks} from "./trackSlice";
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box, IconButton} from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Spinner from "../../components/UI/Spinner/Spinner";
-import { Album } from "../../types";
+import {Album} from "../../types";
 import {selectUser} from "../users/usersSlice.ts";
 import axiosApi from "../../axiosApi.ts";
 
@@ -51,11 +40,11 @@ const TrackList = () => {
     if (error) return <Typography color="error">{error}</Typography>;
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{p: 3}}>
             <Typography variant="h3" gutterBottom>
                 {album?.album_name || 'Album'}
             </Typography>
-            <Typography variant="h5" gutterBottom sx={{ mb: 4 }}>
+            <Typography variant="h5" gutterBottom sx={{mb: 4}}>
                 {typeof album?.artist === 'object' ? album.artist.artist_name : 'Artist'}
             </Typography>
 

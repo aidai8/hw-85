@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/User";
 import Track from "../models/Track";
 import TrackHistory from "../models/TrackHistory";
+import mongoose from "mongoose";
 
 const trackHistoryRouter = express.Router();
 
@@ -21,16 +22,26 @@ trackHistoryRouter.post('/', async (req, res, next) => {
         }
 
         const trackId = req.body.track;
-        const track = await Track.findById(trackId);
+        const track = await Track.findById(trackId)
+            .populate<{album: {artist: mongoose.Types.ObjectId}}>({
+                path: 'album',
+                populate: {path: 'artist'}
+            });
 
         if (!track) {
             res.status(404).send({error: "Track not found"});
             return;
         }
 
+        if (!track.album || !track.album.artist) {
+            res.status(400).send({error: "Track album or artist not found"});
+            return;
+        }
+
         const history = new TrackHistory({
             user: user._id,
             track: track._id,
+            artist: track.album.artist._id
         });
         await history.save();
         res.send({message: "Track added to history", history});
@@ -62,7 +73,8 @@ trackHistoryRouter.get('/', async (req, res, next) => {
                     path: "album",
                     populate: {path: "artist"},
                 },
-            });
+            })
+            .populate("artist");
         res.send(histories);
     } catch (error) {
         next(error);
