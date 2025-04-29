@@ -31,7 +31,7 @@ export const register = createAsyncThunk<
 export const login = createAsyncThunk<
     User,
     LoginMutation,
-    { rejectValue: GlobalError}
+    {rejectValue: GlobalError}
 >(
     "users/login",
     async (loginForm, {rejectWithValue}) => {

@@ -1,7 +1,6 @@
 import mongoose, {HydratedDocument, Model} from "mongoose";
 import {UserFields} from "../types";
 import {randomUUID} from "node:crypto";
-import bcrypt from "bcrypt";
 import argon2 = require("argon2");
 
 interface UserMethods {
@@ -32,7 +31,7 @@ const UserSchema = new mongoose.Schema<
             validator: async function(value: string):Promise<boolean> {
                 if (!this.isModified('username')) return true;
                 const user: HydratedDocument<UserFields> | null = await User.findOne({ username: value });
-                return !!user;
+                return !user;
             },
             message: "This username is already taken"
         }

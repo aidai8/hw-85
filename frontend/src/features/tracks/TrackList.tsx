@@ -2,9 +2,23 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchTracks } from "./trackSlice";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from "@mui/material";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Typography,
+    Box,
+    IconButton
+} from "@mui/material";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Spinner from "../../components/UI/Spinner/Spinner";
 import { Album } from "../../types";
+import {selectUser} from "../users/usersSlice.ts";
+import axiosApi from "../../axiosApi.ts";
 
 const TrackList = () => {
     const { id } = useParams();
@@ -13,6 +27,19 @@ const TrackList = () => {
     const album = useAppSelector((state) =>
         state.albums.albums.find((a: Album) => a._id === id)
     );
+    const user = useAppSelector(selectUser);
+
+    const handlePlay = async (trackId: string) => {
+        if (!user) return;
+
+        try {
+            await axiosApi.post('/trackHistories', {track: trackId}, {
+                headers: {'Authorization': user.token}
+            });
+        } catch (error) {
+            console.error('Failed to add track to history:', error);
+        }
+    };
 
     useEffect(() => {
         if (id) {
@@ -39,6 +66,7 @@ const TrackList = () => {
                             <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>#</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }}>Track Name</TableCell>
                             <TableCell sx={{ fontWeight: 'bold', width: '20%' }}>Duration</TableCell>
+                            {user && <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Play</TableCell>}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -47,6 +75,13 @@ const TrackList = () => {
                                 <TableCell>{track.number}</TableCell>
                                 <TableCell>{track.track_name}</TableCell>
                                 <TableCell>{track.duration}</TableCell>
+                                {user && (
+                                    <TableCell>
+                                        <IconButton onClick={() => handlePlay(track._id)}>
+                                            <PlayArrowIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))}
                     </TableBody>
