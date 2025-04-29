@@ -2,15 +2,21 @@ import mongoose, {HydratedDocument, Model} from "mongoose";
 import {UserFields} from "../types";
 import {randomUUID} from "node:crypto";
 import bcrypt from "bcrypt";
+import argon2 = require("argon2");
 
 interface UserMethods {
     checkPassword: (password: string) => Promise<boolean>;
     generateToken(): void;
 }
 
-type UserModel = Model<UserFields, {}, UserMethods>;
+const ARGON2_OPTIONS = {
+    type: argon2.argon2id,
+    memoryCoast: 2 ** 16,
+    timeCoast: 5,
+    parallelism: 1,
+}
 
-const SALT_WORK_FACTOR = 10;
+type UserModel = Model<UserFields, {}, UserMethods>;
 
 const UserSchema = new mongoose.Schema<
     HydratedDocument<UserFields>,
@@ -22,6 +28,14 @@ const UserSchema = new mongoose.Schema<
         type: String,
         required: true,
         unique: true,
+        validate: {
+            validator: async function(value: string):Promise<boolean> {
+                if (!this.isModified('username')) return true;
+                const user: HydratedDocument<UserFields> | null = await User.findOne({ username: value });
+                return !!user;
+            },
+            message: "This username is already taken"
+        }
     },
     password: {
         type: String,
@@ -34,8 +48,7 @@ const UserSchema = new mongoose.Schema<
 });
 
 UserSchema.methods.checkPassword = async function (password: string) {
-    const user = this;
-    return bcrypt.compare(password, user.password);
+    return await argon2.verify(this.password, password);
 }
 
 UserSchema.methods.generateToken = function () {
@@ -45,10 +58,7 @@ UserSchema.methods.generateToken = function () {
 UserSchema.pre('save', async function (next) {
     if (!this.isModified("password")) return next();
 
-    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-    const hash = await bcrypt.hash(this.password, salt);
-
-    this.password = hash;
+    this.password = await argon2.hash(this.password, ARGON2_OPTIONS);
     next();
 });
 
