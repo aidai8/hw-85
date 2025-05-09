@@ -22,6 +22,7 @@ const run = async () => {
         username: "John",
         password: "123",
         role: "user",
+        token: "user-token-" + Math.random().toString(36).substring(2)
     });
     john.generateToken();
     await john.save();
@@ -30,6 +31,7 @@ const run = async () => {
         username: "Jane",
         password: "123",
         role: "admin",
+        token: "admin-token-" + Math.random().toString(36).substring(2)
     });
     john.generateToken();
     await jane.save();
