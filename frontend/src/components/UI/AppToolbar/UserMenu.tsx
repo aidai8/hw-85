@@ -2,20 +2,32 @@ import {User} from "../../../types";
 import {Button, Menu, MenuItem} from "@mui/material";
 import {NavLink} from "react-router-dom";
 import React, {useState} from "react";
+import {useAppDispatch} from "../../../app/hooks.ts";
+import {logout} from "../../../features/users/usersThunks.ts";
+import {unsetUser} from "../../../features/users/usersSlice.ts";
+import {toast} from "react-toastify";
 
 interface Props {
     user: User;
 }
 
 const UserMenu: React.FC<Props> = ({user}) => {
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const dispatch = useAppDispatch();
+    const [userOptionsEl, setUserOptionsEl] = useState<HTMLElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+        setUserOptionsEl(event.currentTarget);
     };
 
     const handleClose = () => {
-        setAnchorEl(null);
+        setUserOptionsEl(null);
+    };
+
+    const handleLogout = async () => {
+        await dispatch(logout());
+        dispatch(unsetUser());
+        handleClose();
+        toast.success("Logout successfully");
     };
 
     return (
@@ -24,8 +36,9 @@ const UserMenu: React.FC<Props> = ({user}) => {
                 Hello, {user.username}!
             </Button>
             <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
+                keepMounted
+                anchorEl={userOptionsEl}
+                open={Boolean(userOptionsEl)}
                 onClose={handleClose}
             >
                 <MenuItem>
@@ -33,11 +46,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
                         Track History
                     </Button>
                 </MenuItem>
-                <MenuItem>
-                    <Button component={NavLink} to="/logout" onClick={handleClose}>
-                        Logout
-                    </Button>
-                </MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
         </>
     );

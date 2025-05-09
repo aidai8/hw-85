@@ -37,7 +37,11 @@ const AppToolbar = () => {
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     <Link to="/">Music Catalog</Link>
                 </Typography>
-                {user ? <UserMenu user={user} /> : <AnonymousMenu />}
+                {user ?
+                    (<UserMenu user={user}/>)
+                    :
+                    (<AnonymousMenu/>)
+                }
             </Toolbar>
             </Container>
         </AppBar>
