@@ -42,6 +42,11 @@ const AlbumSchema = new Schema({
         type: String,
         required: false,
     },
+    isPublished: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
 });
 
 const Album = mongoose.model("Album", AlbumSchema);

@@ -17,7 +17,12 @@ const TrackSchema = new mongoose.Schema({
             validator: (value: string) => /^(\d{1,2}):(\d{2})$/.test(value),
             message: "Duration must be in format MM:SS or H:MM",
         },
-    }
+    },
+    isPublished: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
 });
 
 const Track = mongoose.model("Track", TrackSchema);

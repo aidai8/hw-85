@@ -3,6 +3,7 @@ export interface Artist {
     artist_name: string;
     image: string | null;
     description?: string;
+    isPublished: boolean;
 }
 
 export type ArtistWithoutId = Omit<Artist, '_id'>;
@@ -13,6 +14,7 @@ export interface Album {
     artist: string | Artist;
     year: number;
     image: string | null;
+    isPublished: boolean;
 }
 
 export type AlbumWithoutId = Omit<Album, '_id'>;
@@ -22,6 +24,7 @@ export interface Track {
     track_name: string;
     album: string | Album;
     duration: string;
+    isPublished: boolean;
 }
 
 export type TrackWithoutId = Omit<Track, '_id'>;
@@ -34,6 +37,7 @@ export interface UserFields {
     username: string;
     password: string;
     token: string;
+    role: string;
 }
 
 export interface TrackHistory extends Document {

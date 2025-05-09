@@ -2,6 +2,8 @@ import express from "express";
 import Track from "../models/Track";
 import mongoose from "mongoose";
 import {Album, Artist, TrackFilter} from "../types";
+import auth from "../middleware/auth";
+import permit from "../middleware/permit";
 
 
 const trackRouter = express.Router();
@@ -46,12 +48,13 @@ trackRouter.get("/", async (req, res, next) => {
     }
 });
 
-trackRouter.post("/", async (req, res, next) => {
+trackRouter.post("/", auth, async (req, res, next) => {
     try {
         const newTrack = {
             track_name: req.body.track_name,
             album: req.body.album,
             duration: req.body.duration,
+            isPublished: false
         };
 
         const track = new Track(newTrack);
@@ -62,6 +65,41 @@ trackRouter.post("/", async (req, res, next) => {
             res.status(400).send(e);
             return;
         }
+        next(e);
+    }
+});
+
+trackRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
+    try {
+        const track = await Track.findById(req.params.id);
+
+        if (!track) {
+            res.status(404).send({message: 'Track not found'});
+            return;
+        }
+
+        await Track.findByIdAndDelete(req.params.id);
+        res.send({message: 'Track deleted successfully'});
+        return;
+    } catch (e) {
+        next(e);
+    }
+});
+
+trackRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req, res, next) => {
+    try {
+        const track = await Track.findById(req.params.id);
+
+        if (!track) {
+            res.status(404).send({message: 'Track not found'});
+            return;
+        }
+
+        track.isPublished = !track.isPublished;
+        await track.save();
+        res.send(track);
+        return;
+    } catch (e) {
         next(e);
     }
 });
