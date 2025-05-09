@@ -18,20 +18,21 @@ const run = async () => {
         console.log('Collections were not present, skipping drop');
     }
 
-    const [admin, user] = await User.create(
-        {
-            username: 'John',
-            password: '123',
-            token: 'admin-token',
-            role: 'admin',
-        },
-        {
-            username: 'Jane',
-            password: '123',
-            token: 'user-token',
-            role: 'user',
-        }
-    );
+    const john = new User({
+        username: "John",
+        password: "123",
+        role: "user",
+    });
+    john.generateToken();
+    await john.save();
+
+    const jane = new User({
+        username: "Jane",
+        password: "123",
+        role: "admin",
+    });
+    john.generateToken();
+    await jane.save();
 
     const [billieEilish, queen] = await Artist.create(
         {
@@ -39,23 +40,23 @@ const run = async () => {
             image: "fixtures/billie.jpeg",
             description: 'Billie Eilish Pirate Baird Connell (born December 18, 2001) is an American singer-songwriter and musician.',
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             artist_name: 'Queen',
             image: "fixtures/queen.jpeg",
             description: 'Queen is a British band that is considered one of the greatest rock bands in history.',
             isPublished: true,
-            user: admin._id
+            user: jane._id
         }
     );
 
     const hiddenArtist = await Artist.create({
         artist_name: 'Hidden Band',
-        image: null,
+        image: "fixtures/unknown.jpeg",
         description: 'Not published',
         isPublished: false,
-        user: user._id
+        user: john._id
     });
 
     const [whenWeAllFallAsleep, happierThanEver] = await Album.create(
@@ -65,7 +66,7 @@ const run = async () => {
             year: 2019,
             image: "fixtures/whenWeAllFallAsleep.jpeg",
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             album_name: 'Happier Than Ever',
@@ -73,7 +74,7 @@ const run = async () => {
             year: 2021,
             image: "fixtures/happierThanEver.jpeg",
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
     );
 
@@ -84,7 +85,7 @@ const run = async () => {
             year: 1975,
             image: "fixtures/nightAtOpera.jpeg",
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             album_name: 'The Game',
@@ -92,7 +93,7 @@ const run = async () => {
             year: 1980,
             image: "fixtures/theGame.jpeg",
             isPublished: true,
-            user: admin._id
+            user: jane._id
         }
     );
 
@@ -101,9 +102,9 @@ const run = async () => {
             album_name: 'Unreleased Tracks',
             artist: hiddenArtist._id,
             year: 2025,
-            image: null,
+            image: "fixtures/noImage.jpeg",
             isPublished: false,
-            user: user._id
+            user: john._id
         }
     );
 
@@ -114,7 +115,7 @@ const run = async () => {
             duration: "2:45",
             number: 1,
             isPublished: false,
-            user: user._id
+            user: john._id
         },
         {
             track_name: "Work in Progress",
@@ -122,7 +123,7 @@ const run = async () => {
             duration: "3:12",
             number: 2,
             isPublished: false,
-            user: user._id
+            user: john._id
         },
         {
             track_name: "Unfinished Track",
@@ -130,7 +131,7 @@ const run = async () => {
             duration: "1:58",
             number: 3,
             isPublished: false,
-            user: user._id
+            user: john._id
         }
     );
 
@@ -141,7 +142,7 @@ const run = async () => {
             duration: "3:14",
             number: 1,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "xanny",
@@ -149,7 +150,7 @@ const run = async () => {
             duration: "4:04",
             number: 2,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "you should see me in a crown",
@@ -157,7 +158,7 @@ const run = async () => {
             duration: "3:01",
             number: 3,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "all the good girls go to hell",
@@ -165,7 +166,7 @@ const run = async () => {
             duration: "2:49",
             number: 4,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "wish you were gay",
@@ -173,7 +174,7 @@ const run = async () => {
             duration: "3:42",
             number: 5,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         }
     );
 
@@ -184,7 +185,7 @@ const run = async () => {
             duration: "4:04",
             number: 1,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "I Didn't Change My Number",
@@ -192,7 +193,7 @@ const run = async () => {
             duration: "2:38",
             number: 2,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "Billie Bossa Nova",
@@ -200,7 +201,7 @@ const run = async () => {
             duration: "3:16",
             number: 3,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "my future",
@@ -208,7 +209,7 @@ const run = async () => {
             duration: "3:30",
             number: 4,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "Oxytocin",
@@ -216,7 +217,7 @@ const run = async () => {
             duration: "3:30",
             number: 5,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         }
     );
 
@@ -227,7 +228,7 @@ const run = async () => {
             duration: "3:43",
             number: 1,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "Lazing on a Sunday Afternoon",
@@ -235,7 +236,7 @@ const run = async () => {
             duration: "1:08",
             number: 2,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "I'm in Love with My Car",
@@ -243,7 +244,7 @@ const run = async () => {
             duration: "3:05",
             number: 3,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "You're My Best Friend",
@@ -251,7 +252,7 @@ const run = async () => {
             duration: "2:50",
             number: 4,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "Bohemian Rhapsody",
@@ -259,7 +260,7 @@ const run = async () => {
             duration: "5:55",
             number: 5,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         }
     );
 
@@ -270,7 +271,7 @@ const run = async () => {
             duration: "3:30",
             number: 1,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "Dragon Attack",
@@ -278,7 +279,7 @@ const run = async () => {
             duration: "4:18",
             number: 2,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "Another One Bites the Dust",
@@ -286,7 +287,7 @@ const run = async () => {
             duration: "3:36",
             number: 3,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "Need Your Loving Tonight",
@@ -294,7 +295,7 @@ const run = async () => {
             duration: "2:48",
             number: 4,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         },
         {
             track_name: "Crazy Little Thing Called Love",
@@ -302,7 +303,7 @@ const run = async () => {
             duration: "2:43",
             number: 5,
             isPublished: true,
-            user: admin._id
+            user: jane._id
         }
     );
 
