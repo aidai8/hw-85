@@ -21,19 +21,21 @@ const run = async () => {
     const john = new User({
         username: "John",
         password: "123",
+        confirmPassword: "123",
         role: "user",
-        token: "user-token-" + Math.random().toString(36).substring(2)
     });
+
     john.generateToken();
     await john.save();
 
     const jane = new User({
         username: "Jane",
         password: "123",
+        confirmPassword: "123",
         role: "admin",
-        token: "admin-token-" + Math.random().toString(36).substring(2)
     });
-    john.generateToken();
+
+    jane.generateToken();
     await jane.save();
 
     const [billieEilish, queen] = await Artist.create(

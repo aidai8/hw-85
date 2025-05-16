@@ -26,6 +26,12 @@ export const fetchArtists = createAsyncThunk("artists/fetchAll", async () => {
     return response.data;
 });
 
+export const createArtist = createAsyncThunk("artists/create", async (artistData: FormData) => {
+        const response = await axiosApi.post("/artists", artistData);
+        return response.data;
+    }
+);
+
 const artistSlice = createSlice({
     name: "artists",
     initialState,
@@ -38,7 +44,10 @@ const artistSlice = createSlice({
             .addCase(fetchArtists.fulfilled, (state, action) => {
                 state.artists = action.payload;
                 state.loading = false;
-            });
+            })
+            .addCase(createArtist.fulfilled, (state, action) => {
+                state.artists.push(action.payload)
+            })
     },
 });
 

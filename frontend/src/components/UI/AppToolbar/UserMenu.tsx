@@ -1,6 +1,6 @@
 import {User} from "../../../types";
 import {Button, Menu, MenuItem} from "@mui/material";
-import {NavLink} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import React, {useState} from "react";
 import {useAppDispatch} from "../../../app/hooks.ts";
 import {logout} from "../../../features/users/usersThunks.ts";
@@ -47,6 +47,13 @@ const UserMenu: React.FC<Props> = ({user}) => {
                     </Button>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem>
+                    {user && (
+                        <Button component={Link} to="/new-artist" color="inherit">
+                            Add Artist
+                        </Button>
+                    )}
+                </MenuItem>
             </Menu>
         </>
     );

@@ -3,6 +3,7 @@ export interface Artist {
     artist_name: string;
     image: string | null;
     description?: string;
+    isPublished?: boolean;
 }
 
 export interface Album {

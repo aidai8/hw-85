@@ -7,7 +7,7 @@ const permit = (...roles: string[]) => {
         const req = expressReq as RequestWithUser;
 
         if (!req.user) {
-            res.status(401).send({message: 'Unauthorized'});
+            res.status(401).send({message: 'Unauthenticated'});
             return;
         }
 
@@ -16,7 +16,7 @@ const permit = (...roles: string[]) => {
             return;
         }
 
-        next()
+        next();
     }
 };
 
