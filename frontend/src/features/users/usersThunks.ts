@@ -22,18 +22,18 @@ export const register = createAsyncThunk<
             if (isAxiosError(error) && error.response && error.response.status === 400) {
                 return rejectWithValue(error.response.data);
             }
-        }
 
-        throw Error;
+            throw error;
+        }
     }
 );
 
 export const login = createAsyncThunk<
     User,
     LoginMutation,
-    {rejectValue: GlobalError}
+    { rejectValue: GlobalError}
 >(
-    "users/login",
+    'users/login',
     async (loginForm, {rejectWithValue}) => {
         try {
             const response = await axiosApi.post<RegisterAndLoginResponse>('/users/sessions', loginForm);
@@ -42,10 +42,31 @@ export const login = createAsyncThunk<
             if (isAxiosError(error) && error.response && error.response.status === 400) {
                 return rejectWithValue(error.response.data);
             }
+
+            throw error;
         }
-        throw Error;
     }
-);
+)
+
+export const googleLogin = createAsyncThunk<
+    User,
+    string,
+    {rejectValue: GlobalError}
+>(
+    'users/googleLogin',
+    async (credential, {rejectWithValue}) => {
+        try {
+            const response = await axiosApi.post<RegisterAndLoginResponse>('/users/google', {credential});
+            return response.data.user;
+        } catch (error) {
+            if (isAxiosError(error) && error.response && error.response.status === 400) {
+                return rejectWithValue(error.response.data);
+            }
+
+            throw error;
+        }
+    }
+)
 
 export const logout = createAsyncThunk<
     void,
@@ -53,6 +74,6 @@ export const logout = createAsyncThunk<
 >(
     'users/logout',
     async () => {
-        await axiosApi.delete('users/sessions');
+        await axiosApi.delete('users/sessions', {withCredentials: true});
     }
-);
+)

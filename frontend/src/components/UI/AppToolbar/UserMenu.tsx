@@ -36,24 +36,23 @@ const UserMenu: React.FC<Props> = ({user}) => {
                 Hello, {user.username}!
             </Button>
             <Menu
-                keepMounted
                 anchorEl={userOptionsEl}
                 open={Boolean(userOptionsEl)}
                 onClose={handleClose}
+                keepMounted
             >
-                <MenuItem>
-                    <Button component={NavLink} to="/trackHistory" onClick={handleClose}>
-                        Track History
-                    </Button>
+                {user.role === 'admin' && (
+                    <MenuItem onClick={handleClose}>
+                        <Button component={NavLink} to="/admin">Admin</Button>
+                    </MenuItem>
+                )}
+                <MenuItem onClick={handleClose}>
+                    <Button component={NavLink} to="/trackHistory">Track History</Button>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                    <Button component={Link} to="/new-artist">Add Artist</Button>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                <MenuItem>
-                    {user && (
-                        <Button component={Link} to="/new-artist" color="inherit">
-                            Add Artist
-                        </Button>
-                    )}
-                </MenuItem>
             </Menu>
         </>
     );

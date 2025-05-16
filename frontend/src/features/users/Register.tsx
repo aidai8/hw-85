@@ -7,6 +7,7 @@ import {RegisterMutation} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectRegisterError, selectRegisterLoading} from "./usersSlice";
 import {register} from "./usersThunks";
+import {toast} from "react-toastify";
 
 const Register = () => {
     const dispatch = useAppDispatch();
@@ -36,6 +37,7 @@ const Register = () => {
         try {
             await dispatch(register(form)).unwrap();
             navigate("/");
+            toast.success("Registration successful");
         } catch (error) {
             console.error(error);
         }

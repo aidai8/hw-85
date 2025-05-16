@@ -1,16 +1,20 @@
 import {Navigate} from "react-router-dom";
-import {toast} from "react-toastify";
-import React from "react";
+import {useAppSelector} from "../../../app/hooks.ts";
+import {selectUser} from "../../../features/users/usersSlice.ts";
 
-interface Props extends React.PropsWithChildren{
+interface Props extends React.PropsWithChildren {
     isAllowed: boolean | null;
 }
 
 const ProtectedRoute: React.FC<Props> = ({isAllowed, children}) => {
+    const user = useAppSelector(selectUser);
 
     if (!isAllowed) {
-        toast.error('Login or register first');
-        return <Navigate to='/login'/>
+        if (Boolean(user)) {
+            return <Navigate to='/'/>
+        } else {
+            return <Navigate to='/login'/>
+        }
     }
 
     return children;

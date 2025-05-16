@@ -9,8 +9,6 @@ import TrackList from "./features/tracks/TrackList.tsx";
 import Register from "./features/users/Register.tsx";
 import Login from "./features/users/Login.tsx";
 import TrackHistory from "./features/trackHistory/TrackHistory.tsx";
-import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
-import ArtistForm from "./features/artists/ArtistForm.tsx";
 
 
 const App = () => {
@@ -32,12 +30,6 @@ const App = () => {
                       <Route path="/login" element={<Login/>} />
                       <Route path="/register" element={<Register/>} />
                       <Route path="/trackHistory" element={<TrackHistory/>}/>
-
-                      <Route path="/new-artist" element={
-                          <ProtectedRoute isAllowed={!!user}>
-                              <ArtistForm />
-                          </ProtectedRoute>
-                      } />
 
                       <Route path="*" element={<Typography variant="h4">Not found page</Typography>} />
                   </Routes>

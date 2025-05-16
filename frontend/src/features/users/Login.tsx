@@ -6,7 +6,9 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import {LoginMutation} from "../../types";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectLoginError, selectLoginLoading} from "./usersSlice";
-import {login} from "./usersThunks";
+import {googleLogin, login} from "./usersThunks";
+import {toast} from "react-toastify";
+import {GoogleLogin} from "@react-oauth/google";
 
 const Login = () => {
     const dispatch = useAppDispatch();
@@ -28,9 +30,15 @@ const Login = () => {
         try {
             await dispatch(login(form)).unwrap();
             navigate("/");
+            toast.success("Login successful");
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const googleLoginHandler = async (credential: string) => {
+        await dispatch(googleLogin(credential)).unwrap();
+        navigate('/');
     };
 
     return (
@@ -52,6 +60,20 @@ const Login = () => {
             {error && (
                 <Alert severity="error">{error.error}</Alert>
             )}
+
+            <Box sx={{pt: 2}}>
+                <GoogleLogin
+                    onSuccess={(credentialResponse)=> {
+                        if (credentialResponse.credential) {
+                            void googleLoginHandler(credentialResponse.credential);
+                        }
+
+                    }}
+                    onError={() => {
+                        console.log('Login failed');
+                    }}
+                />
+            </Box>
 
             <Box component="form" noValidate onSubmit={onSubmitFormHandler} sx={{mt: 3}}>
                 <Grid container spacing={2}>
